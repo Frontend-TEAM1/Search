@@ -15,6 +15,8 @@ const SearchBar = () => {
 	);
 
 	const [timer, setTimer] = useState(0);
+	const [isResultShow, setIsResultShow] = useState(false);
+	const [focusIdx, setFocusIdx] = useState(-1);
 
 	useEffect(() => {
 		window.localStorage.setItem('recentSearches', JSON.stringify(recent));
@@ -37,29 +39,40 @@ const SearchBar = () => {
 
 	const onSearchClick = () => {
 		if (!searchKey) return setResult([]);
-		setRecent([searchKey, ...recent]);
+		let newRecent = JSON.parse(JSON.stringify(recent));
+		// newRecent = [searchKey, ...newRecent];
+		//setRecent([searchKey, ...recent]); //의미없음 가장 마지막에 실행되기떄문에
 		setSearchKey('');
+		console.log('newRecent', newRecent);
 
-		const index = recent.findIndex(item => item === searchKey);
+		const index = newRecent.findIndex(item => item === searchKey);
+		// 없으면 index = -1
 
 		if (index > 0) {
-			recent.splice(index, 1);
-			recent.unshift(searchKey);
+			newRecent.splice(index, 1);
+			newRecent.unshift(searchKey);
 		} else if (index === 0) {
 			return;
 		} else {
-			recent.unshift(searchKey);
+			newRecent.unshift(searchKey);
 		}
 
-		if (recent.length > 4) {
-			setRecent(recent.slice(0, 5));
+		if (newRecent.length > 4) {
+			setRecent(newRecent.slice(0, 5));
+		} else {
+			setRecent(newRecent);
 		}
 		setResult([]);
+		setFocusIdx(-1);
 	};
 
 	const onRemove = () => {
 		localStorage.removeItem('recentSearches');
 	};
+
+	// const onRemove = () => {
+	// 	localStorage.removeItem('recentSearches');
+	// };
 
 	const onEnterPress = e => {
 		if (e.key == 'Enter') onSearchClick();
@@ -72,7 +85,8 @@ const SearchBar = () => {
 	};
 
 	const renderResult = () => {
-		if (result) {
+		if (result && searchKey !== '') {
+			//searchKey 값관련 로직추가(container > onBlur도 참고)
 			return result.map(item => {
 				const index = item.indexOf(searchKey);
 				if (index >= 0) {
@@ -87,49 +101,93 @@ const SearchBar = () => {
 		}
 	};
 
+	const changeIdxNum = e => {
+		const recLength = renderResult()?.length || 0;
+		const maxList = 100;
+
+		console.log('changeIdxNum', focusIdx, recLength);
+		console.log('e.key>>>>>>', e.key);
+
+		if (e.key === 'ArrowDown') {
+			recLength > 0 && recLength < maxList
+				? setFocusIdx(prev => (prev + 1) % recLength)
+				: setFocusIdx(prev => (prev + 1) % maxList);
+		}
+		if (e.key === 'ArrowUp') {
+			recLength > 0 && recLength < maxList
+				? setFocusIdx(prev => (prev - 1 + recLength) % recLength)
+				: setFocusIdx(prev => (prev - 1 + maxList) % maxList);
+		}
+		if (e.key === 'Escape') {
+			setFocusIdx(-1);
+			setIsResultShow(false);
+		}
+		if (e.key === 'Enter') {
+			recLength > 0 && focusIdx >= 0 && setSearchKey(result[focusIdx]);
+		}
+	};
+
 	return (
 		<>
 			<button onClick={onRemove}>캐시 날리기</button>
 			<Wrapper>
-				<Container>
+				<Container
+					onBlur={e => {
+						console.log('onBlur>>>>>', e);
+						setIsResultShow(false);
+					}}
+				>
 					<Input
 						type="text"
 						placeholder="검색어를 입력해주세요"
-						onChange={e => setSearchKey(e.target.value)}
-						onKeyDown={onEnterPress}
+						onChange={e => {
+							setSearchKey(e.target.value);
+						}}
+						onKeyDown={e => {
+							onEnterPress(e);
+							changeIdxNum(e);
+						}}
 						value={searchKey}
+						onFocus={() => setIsResultShow(true)}
 					/>
 					<SearchButton onClick={onSearchClick}>Search</SearchButton>
 
-					<SearchResult>
-						<RecentWrapper>
-							<RecentTitle>최근 검색어</RecentTitle>
-							{recent &&
-								recent.map((search, index) => (
-									<RecentItem key={Math.random()}>
-										{search}
-										<button>X</button>
-									</RecentItem>
-								))}
-						</RecentWrapper>
-						<HistoryWrapper>
-							{/* {result &&
-								result.map(item => (
-									<History onClick={e => onPreviewClick(e)}>{item}</History>
-								))} */}
-							{renderResult() &&
-								renderResult().map(
-									word =>
-										word && (
-											<WordContainer onClick={e => onPreviewClick(e)}>
-												<PreWord>{word.preWord}</PreWord>
-												<MatchWord>{word.matchWord}</MatchWord>
-												<PostWord>{word.postWord}</PostWord>
-											</WordContainer>
-										),
-								)}
-						</HistoryWrapper>
-					</SearchResult>
+					{isResultShow && (
+						<SearchResult>
+							<RecentWrapper>
+								<RecentTitle>최근 검색어</RecentTitle>
+								{recent &&
+									recent.map((search, index) => (
+										<RecentItem key={Math.random()}>
+											{search}
+											<button>X</button>
+										</RecentItem>
+									))}
+							</RecentWrapper>
+							<HistoryWrapper>
+								{renderResult() &&
+									renderResult().map(
+										(word, idx) =>
+											word && (
+												<WordContainer
+													style={{
+														backgroundColor:
+															focusIdx === idx ? 'gray' : 'white',
+													}}
+													onMouseDown={e => {
+														e.stopPropagation();
+														onPreviewClick(e);
+													}}
+												>
+													<PreWord>{word.preWord}</PreWord>
+													<MatchWord>{word.matchWord}</MatchWord>
+													<PostWord>{word.postWord}</PostWord>
+												</WordContainer>
+											),
+									)}
+							</HistoryWrapper>
+						</SearchResult>
+					)}
 				</Container>
 			</Wrapper>
 			{/* <span>{CurrentMode}</span> */}
@@ -185,7 +243,7 @@ const SearchResult = styled.div`
 	min-height: 150px;
 	max-height: 500px;
 	top: -25px;
-	/* border: 1px solid darkgrey; */
+	border: 1px solid darkgrey;
 	border-radius: 24px;
 	position: absolute;
 	box-shadow: none;
@@ -198,22 +256,14 @@ const RecentWrapper = styled.div`
 	align-items: center;
 	border-radius: 10px;
 	height: 40px;
-	/* padding: 0 10px; */
-	/* padding-top: 60px; */
 	padding-left: 20px;
 `;
 
 const RecentTitle = styled.div`
-	font-size: 14px;
+	font-size: 15px;
 	font-weight: bold;
 	margin-right: 10px;
 `;
-
-// const RecentSearchesList = styled.ul`
-// 	padding-left: 0;
-// 	margin-bottom: 0;
-// 	list-style: none;
-// `;
 
 const RecentItem = styled.span`
 	padding: 5px 5px;

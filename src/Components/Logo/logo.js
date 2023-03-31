@@ -2,10 +2,13 @@ import styled, { useTheme } from 'styled-components';
 
 const Logo = () => {
 	const ThemeMode = useTheme();
-
 	return (
 		<LogoWrapper theme={ThemeMode[0]}>
-			{ThemeMode === 'light' ? (
+			<img
+				src="/Assets/search_mascot_light.png"
+				style={{ width: '100px' }}
+			></img>
+			{/* {ThemeMode === 'light' ? (
 				<img
 					src="/Assets/search_mascot_light.png"
 					style={{ width: '100px' }}
@@ -15,7 +18,7 @@ const Logo = () => {
 					src="/Assets/search_mascot_dark.png"
 					style={{ width: '100px' }}
 				></img>
-			)}
+			)} */}
 		</LogoWrapper>
 	);
 };
