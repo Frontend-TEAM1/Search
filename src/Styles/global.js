@@ -3,9 +3,10 @@ import reset from 'styled-reset';
 
 const GlobalStyles = createGlobalStyle`
     ${reset}
-    *{
+    body{
         box-sizing: border-box;
-        /* background-color: ${({ theme }) => theme.MODE.dark.bg}; */
+        background: ${({ theme }) => theme.bgColor};
+        color: ${({ theme }) => theme.textColor};
         @font-face {
             font-family: 'Namsan';
             src: url('./Assets/Font/seoulNamsanB.ttf');
