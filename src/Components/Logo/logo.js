@@ -1,7 +1,9 @@
-import styled, { useTheme } from 'styled-components';
+import { useTheme } from 'Context/themeProvider';
+import styled from 'styled-components';
 
 const Logo = () => {
 	const ThemeMode = useTheme();
+	console.log(ThemeMode);
 	return (
 		<LogoWrapper theme={ThemeMode[0]}>
 			<img

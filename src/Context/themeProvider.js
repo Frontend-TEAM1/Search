@@ -9,6 +9,7 @@ const ThemeContext = createContext({});
 
 const ThemeProvider = ({ children }) => {
 	const LocalTheme = window.localStorage.getItem('theme') || 'light';
+	// Provider로 넘길 context value 지정
 	const [ThemeMode, setThemeMode] = useState(LocalTheme);
 	const themeObject = ThemeMode === 'light' ? lightTheme : darkTheme;
 
@@ -19,6 +20,7 @@ const ThemeProvider = ({ children }) => {
 	);
 };
 
+//custom hook -> 'light' 와 'dark' 테마 토글 기능 처리
 function useTheme() {
 	const context = useContext(ThemeContext);
 	const { ThemeMode, setThemeMode } = context;
