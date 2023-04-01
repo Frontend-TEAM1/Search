@@ -8,9 +8,33 @@
 
 ## 📤배포 주소
 
+<<<<<<< HEAD
 <br></br>
 
 ### 📁 프로젝트 폴더 구조
+
+=======
+📦src
+┣ 📂Apis
+┃ ┗ 📜core.js
+┣ 📂Components
+┃ ┣ 📂Logo
+┃ ┃ ┗ 📜logo.js
+┃ ┗ 📂SearchBar
+┃ ┃ ┗ 📜searchBar.js
+┣ 📂Context
+┃ ┗ 📜themeProvider.js
+┣ 📂Styles
+┃ ┣ 📜global.js
+┃ ┣ 📜theme.js
+┃ ┗ 📜themeToggle.js
+┣ 📜App.js
+┗ 📜index.js
+<br></br>
+
+### 🌳 프로젝트 폴더 구조
+
+> > > > > > > 8251680 (Update README.md)
 
 ```
 
@@ -53,6 +77,7 @@
 
 <br></br>
 
+<<<<<<< HEAD
 <br></br>
 
 ## 🔍구현 기능
@@ -67,7 +92,24 @@
   => 그러면 내가 설정한 delay시간내에 입력한 값들에대해서는 요청을 하지않고 마지막 입력 값에서 delay시간이 지나면 그때 api요청을 해줄 수 있다.
   => 이렇게하면 불필요한 api요청을 줄일 수 있다!
 
+# <br></br>
+
+## 📁폴더 구조
+
 <br></br>
+
+## 🔍구현 기능
+
+1.  **API 콜 최적화하기**
+
+            - 검색 서비스는 사용자가 입력 될 때마다 API 콜을 요청하기 때문에 굉장히 비효율적일 수 있습니다. 물론 검색 서비스가 주가 되는 경우 모든 요청을 받을 수 있습니다.
+            - 이러한 경우 중복된 요청이나 필요없는 요청이 발생될 수 있음으로 이를 최적화 하기 위한 방법이 무엇이 있을지 고민해보고 상의하여 구현해주세요
+            - 단, 라이브러리는 axios만 사용이 가능하며 axios의 cache 옵션은 사용할 수 없습니다. (react-query와 같은 캐싱 라이브러리 사용불가 )
+            - react, react-router-dom, styled-componet와 같은 기본적인 라이브러리만 사용이 가능하며 그 외는 axios 외 허용하지 않습니다
+
+        <br></br>
+
+    > > > > > > > 8251680 (Update README.md)
 
 2.  **최근 검색어 기능 구현하기**
 
@@ -121,10 +163,19 @@
 
 ### 🔧 사용 기술 스텍
 
-| 기술 스택      | 종류                                                                                                                                             |
+<<<<<<< HEAD
+| 기술 스택 | 종류 |
 | :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **언어**       | <img  width="60" src="https://user-images.githubusercontent.com/112946860/225957694-7e3b3669-9216-4271-a7c8-555c8976368b.png" /><br />Javascript |
-| **프론트엔드** | <img width="60" src="https://user-images.githubusercontent.com/112946860/225957071-10a74540-d7b5-457c-821e-91547e62a429.png" /><br />React       |
+| **언어** | <img  width="60" src="https://user-images.githubusercontent.com/112946860/225957694-7e3b3669-9216-4271-a7c8-555c8976368b.png" /><br />Javascript |
+| **프론트엔드** | <img width="60" src="https://user-images.githubusercontent.com/112946860/225957071-10a74540-d7b5-457c-821e-91547e62a429.png" /><br />React |
+=======
+| 기술 스택 | 종류 |
+| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **언어** | <img  width="60" src="https://user-images.githubusercontent.com/112946860/225957694-7e3b3669-9216-4271-a7c8-555c8976368b.png" /><br />Javascript |
+
+**프론트엔드** | <img width="60" src="https://user-images.githubusercontent.com/112946860/225957071-10a74540-d7b5-457c-821e-91547e62a429.png" /><br />React
+
+> > > > > > > 8251680 (Update README.md)
 
 <br></br>
 
