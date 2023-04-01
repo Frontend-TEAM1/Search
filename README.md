@@ -194,8 +194,12 @@
 =======
 | 기술 스택 | 종류 |
 | :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------- |
+<<<<<<< HEAD
 | **언어** | <img  width="60" src="https://user-images.githubusercontent.com/112946860/225957694-7e3b3669-9216-4271-a7c8-555c8976368b.png" /><br />Javascript |
 
+=======
+| **언어**  | <img  width="60" src="https://user-images.githubusercontent.com/112946860/225957694-7e3b3669-9216-4271-a7c8-555c8976368b.png" /><br />Javascript |
+>>>>>>> c4787de (Update README.md)
 |**프론트엔드** | <img width="60" src="https://user-images.githubusercontent.com/112946860/225957071-10a74540-d7b5-457c-821e-91547e62a429.png" /><br />React|
 
 > > > > > > > 8251680 (Update README.md)
