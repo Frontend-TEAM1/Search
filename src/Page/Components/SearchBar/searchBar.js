@@ -61,6 +61,7 @@ const SearchBar = () => {
 		}
 		if (result.length === 1) return setFocusIdx(0);
 		setResult([]);
+		setFocusIdx(-1);
 	};
 
 	const onRemoveHistory = search => {
@@ -127,8 +128,7 @@ const SearchBar = () => {
 			document.activeElement.blur();
 		}
 		if (e.key === 'Enter') {
-			// recLength > 0 && focusIdx >= 0 && setSearchKey(result[focusIdx]);
-
+			if (result[0] === '검색 결과가 없습니다.') onSearchClick();
 			if (searchKey !== result[focusIdx]) {
 				setSearchKey(result[focusIdx]);
 				return setFocusIdx(-1);
