@@ -28,6 +28,7 @@ const ResultSection = ({
 							(word, idx) =>
 								word && (
 									<WordContainer
+										key={idx}
 										style={{
 											backgroundColor: focusIdx === idx ? 'gray' : 'white',
 										}}

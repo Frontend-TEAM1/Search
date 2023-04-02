@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import ResultSection from '../ResultSection/resultSection';
 
 const SearchBar = () => {
-	//검색어관련
 	const [searchKey, setSearchKey] = useState('');
 	const [result, setResult] = useState('');
 	const [recent, setRecent] = useState(
@@ -29,7 +28,6 @@ const SearchBar = () => {
 		}
 		const newTimer = setTimeout(async () => {
 			try {
-				const testData = await FromDB(searchKey);
 				setResult(await FromDB(searchKey));
 			} catch (err) {
 				setResult([err.response.data]);
@@ -41,7 +39,6 @@ const SearchBar = () => {
 	const onSearchClick = () => {
 		if (!searchKey) return setResult([]);
 		let newRecent = JSON.parse(JSON.stringify(recent));
-		setSearchKey('');
 
 		const index = newRecent.findIndex(item => item === searchKey);
 
@@ -61,6 +58,7 @@ const SearchBar = () => {
 		}
 		setResult([]);
 		setFocusIdx(-1);
+		setSearchKey('');
 	};
 
 	const onRemoveHistory = search => {
@@ -96,12 +94,9 @@ const SearchBar = () => {
 
 	const changeIdxNum = e => {
 		const recLength = renderResult()?.length || 0;
-		const maxList = 100;
 
 		if (e.key === 'ArrowDown') {
-			recLength > 0 && recLength < maxList
-				? setFocusIdx(prev => (prev + 1) % recLength)
-				: setFocusIdx(prev => (prev + 1) % maxList);
+			setFocusIdx(prev => prev + 1);
 			if (focusIdx > 6) {
 				scrollRef.current.scrollTop += 55;
 			}
@@ -110,9 +105,7 @@ const SearchBar = () => {
 			}
 		}
 		if (e.key === 'ArrowUp') {
-			recLength > 0 && recLength < maxList
-				? setFocusIdx(prev => (prev - 1 + recLength) % recLength)
-				: setFocusIdx(prev => (prev - 1 + maxList) % maxList);
+			recLength > 0 && setFocusIdx(prev => (prev - 1 + recLength) % recLength);
 			scrollRef.current.scrollTop -= 40;
 
 			if (focusIdx === 0) {
@@ -125,11 +118,13 @@ const SearchBar = () => {
 			document.activeElement.blur();
 		}
 		if (e.key === 'Enter') {
-			if (searchKey !== result[focusIdx]) onSearchClick(e);
-			recLength > 0 && focusIdx >= 0 && setSearchKey(result[focusIdx]);
+			if (result[focusIdx]) {
+				setFocusIdx(-1);
+				return setSearchKey(result[focusIdx]);
+			}
+			onSearchClick();
 		}
 	};
-
 	return (
 		<>
 			<Wrapper>
