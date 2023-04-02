@@ -42,8 +42,8 @@
 │
 └─📂Styles
       ├─global.js
-      ├─theme.js
-      └─themeToggle.js
+      └─theme.js
+      
 
 
 
