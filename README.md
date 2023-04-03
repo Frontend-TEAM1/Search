@@ -53,6 +53,18 @@
 
 <br></br>
 
+-- 메인페이지 --
+![search_page](https://user-images.githubusercontent.com/117559842/229358881-97049340-192b-49d0-99d9-209e8fefc2a3.png)
+
+
+-- 검색어 입력 시 --
+![search_page2](https://user-images.githubusercontent.com/117559842/229359125-6d23a279-76f9-49ec-85a3-108fefae51c4.png)
+
+
+-- 최근검색어 기록 --
+
+![search_page1_2](https://user-images.githubusercontent.com/117559842/229359149-7a261d32-e8a6-4005-81c9-952a448956b7.png)
+
 <br></br>
 
 ## 🔍구현 기능
