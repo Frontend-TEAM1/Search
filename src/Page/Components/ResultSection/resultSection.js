@@ -28,6 +28,7 @@ const ResultSection = ({
 							(word, idx) =>
 								word && (
 									<WordContainer
+										key={idx}
 										style={{
 											backgroundColor: focusIdx === idx ? 'gray' : 'white',
 										}}
@@ -107,7 +108,6 @@ const HistoryWrapper = styled.div`
 	max-height: 350px;
 	margin-top: 20px;
 	overflow: auto;
-	// js로 스크롤만들기(해당하는 div.srcollTo(20))
 	&::-webkit-scrollbar {
 		width: 8px;
 	}

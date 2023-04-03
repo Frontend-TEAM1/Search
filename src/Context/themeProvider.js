@@ -1,43 +1,30 @@
-import { ThemeProvider as StyledProvider } from 'styled-components';
 import { useState } from 'react';
-import { useContext } from 'react';
-import { createContext } from 'react';
-import { useCallback } from 'react';
-import { darkTheme, lightTheme } from 'Styles/theme';
-
-const ThemeContext = createContext({});
-
-const ThemeProvider = ({ children }) => {
-	const LocalTheme = window.localStorage.getItem('theme') || 'light';
-	// Provider로 넘길 context value 지정
-	const [ThemeMode, setThemeMode] = useState(LocalTheme);
-	const themeObject = ThemeMode === 'light' ? lightTheme : darkTheme;
-
-	return (
-		<ThemeContext.Provider value={{ ThemeMode, setThemeMode }}>
-			<StyledProvider theme={themeObject}>{children}</StyledProvider>
-		</ThemeContext.Provider>
-	);
-};
 
 //custom hook -> 'light' 와 'dark' 테마 토글 기능 처리
-function useTheme() {
-	const context = useContext(ThemeContext);
-	const { ThemeMode, setThemeMode } = context;
+export const useTheme = () => {
+	// 브라우저 테마 정보 확인
+	const isBrowserDarkMode =
+		window.matchMedia &&
+		window.matchMedia('(prefers-color-scheme: dark)').matches;
+	let initTheme = isBrowserDarkMode ? 'darkTheme' : 'lightTheme';
 
-	const toggleTheme = useCallback(() => {
-		if (ThemeMode === 'light') {
-			setThemeMode('dark');
-			window.localStorage.setItem('theme', 'dark');
-		} else {
-			setThemeMode('light');
-			window.localStorage.setItem('theme', 'light');
-		}
-	}, [ThemeMode]);
+	// 사용자가 테마 설정을 직접 지정한 테마가 있는지 확인
+	const localSettingTheme = localStorage.getItem('theme');
 
-	return [ThemeMode, toggleTheme];
-}
+	// 지정한 테마가 존재한다면 해당 테마로 설정 없으면 브라우저 기본 설정 테마로 세팅
+	if (localSettingTheme) {
+		initTheme = localSettingTheme;
+	}
 
-export { ThemeProvider, useTheme };
+	const [theme, setTheme] = useState(initTheme);
 
-export default ThemeProvider;
+	const setMode = mode => {
+		// 테마정보 변경하면 localstorage 에 저장해 다음에도 지정한 값으로 테마가 보이도록 설정
+		window.localStorage.setItem('theme', mode);
+		setTheme(mode);
+	};
+
+	const toggleTheme = () => setMode(theme === 'light' ? 'dark' : 'light');
+
+	return [theme, toggleTheme];
+};

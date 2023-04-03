@@ -4,14 +4,16 @@ import { useRef } from 'react';
 import styled from 'styled-components';
 import ResultSection from '../ResultSection/resultSection';
 
+// axios가 api 폴더 외에 설정되어있으면 잘못된것임.
+// ㄴ api를 부르는 로직이 화면띄우는 곳에 있으면 반드시 분리해야한다.
 const SearchBar = () => {
-	//검색어관련
 	const [searchKey, setSearchKey] = useState('');
 	const [result, setResult] = useState('');
 	const [recent, setRecent] = useState(
 		JSON.parse(window.localStorage.getItem('recentSearches')) || [],
 	);
 
+	// timer > debounce 분리하기 (useDebounce ) 와 같은 hook으로 빼내기 (Hooks 폴더? > 많아지면 분리하기)
 	const [timer, setTimer] = useState(0);
 	const [isResultShow, setIsResultShow] = useState(false);
 	const [focusIdx, setFocusIdx] = useState(-1);
@@ -29,7 +31,6 @@ const SearchBar = () => {
 		}
 		const newTimer = setTimeout(async () => {
 			try {
-				const testData = await FromDB(searchKey);
 				setResult(await FromDB(searchKey));
 			} catch (err) {
 				setResult([err.response.data]);
@@ -41,7 +42,10 @@ const SearchBar = () => {
 	const onSearchClick = () => {
 		if (!searchKey) return setResult([]);
 		let newRecent = JSON.parse(JSON.stringify(recent));
-		setSearchKey('');
+		// recent 값을 복사할때 =로는 복사x (얕은복사_"배열객체는 깊은복사가 잘 안됨", 깊은복사 공부하기!)
+		// 깊은복사를 해주는(2번파싱) deepCopy 함수를 만들어보는것? const deepCopy = (recent ) =>  JSON.parse(JSON.stringify(recent)
+		// utils 폴더에 따로 분리해주는것도 좋음 object.js 와 같은?
+		// 2중 파싱은 속도가 느려진다!
 
 		const index = newRecent.findIndex(item => item === searchKey);
 
@@ -59,10 +63,12 @@ const SearchBar = () => {
 		} else {
 			setRecent(newRecent);
 		}
-		if (result.length === 1) return setFocusIdx(0);
 		setResult([]);
+		setFocusIdx(-1);
+		setSearchKey('');
 	};
 
+	// hook 으로 빼기
 	const onRemoveHistory = search => {
 		let newRecent = JSON.parse(JSON.stringify(recent));
 		const index = newRecent.findIndex(item => item === search);
@@ -70,6 +76,8 @@ const SearchBar = () => {
 		setRecent(newRecent);
 		localStorage.setItem('recentSearches', JSON.stringify(newRecent));
 	};
+
+	// hook 으로 빼기
 
 	const onPreviewClick = e => {
 		const targetText = e.target.parentNode.textContent;
@@ -96,12 +104,9 @@ const SearchBar = () => {
 
 	const changeIdxNum = e => {
 		const recLength = renderResult()?.length || 0;
-		const maxList = 100;
 
 		if (e.key === 'ArrowDown') {
-			recLength > 0 && recLength < maxList
-				? setFocusIdx(prev => (prev + 1) % recLength)
-				: setFocusIdx(prev => (prev + 1) % maxList);
+			setFocusIdx(prev => prev + 1);
 			if (focusIdx > 6) {
 				scrollRef.current.scrollTop += 55;
 			}
@@ -109,33 +114,27 @@ const SearchBar = () => {
 				scrollRef.current.scrollTop = 0;
 			}
 		}
-
 		if (e.key === 'ArrowUp') {
-			recLength > 0 && recLength < maxList
-				? setFocusIdx(prev => (prev - 1 + recLength) % recLength)
-				: setFocusIdx(prev => (prev - 1 + maxList) % maxList);
+			recLength > 0 && setFocusIdx(prev => (prev - 1 + recLength) % recLength);
 			scrollRef.current.scrollTop -= 40;
 
 			if (focusIdx === 0) {
 				scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
 			}
 		}
-
 		if (e.key === 'Escape') {
 			setFocusIdx(-1);
 			setIsResultShow(false);
 			document.activeElement.blur();
 		}
 		if (e.key === 'Enter') {
-			// recLength > 0 && focusIdx >= 0 && setSearchKey(result[focusIdx]);
-
-			if (searchKey !== result[focusIdx]) {
-				setSearchKey(result[focusIdx]);
-				return setFocusIdx(-1);
-			} else onSearchClick();
+			if (result[focusIdx]) {
+				setFocusIdx(-1);
+				return setSearchKey(result[focusIdx]);
+			}
+			onSearchClick();
 		}
 	};
-
 	return (
 		<>
 			<Wrapper>
@@ -153,6 +152,7 @@ const SearchBar = () => {
 						onFocus={() => setIsResultShow(true)}
 					/>
 					<SearchButton onClick={onSearchClick}>Search</SearchButton>
+
 					{isResultShow && (
 						<ResultSection
 							onRemoveHistory={onRemoveHistory}
